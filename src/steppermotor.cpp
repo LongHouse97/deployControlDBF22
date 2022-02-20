@@ -90,44 +90,16 @@ void StepperMotor::singleStep()
     switch (currentStep % 4)
     {
     case 0:
-        //PORTD = 0x05;
         PORTD = 5 + Led::getOffset();
-        //SETBITMASK(PORTD, 0x05);
         break;
     case 1:
-        //PORTD = 0x06;
         PORTD = 6 + Led::getOffset();
-        //SETBITMASK(PORTD, 0x06);
         break;
     case 2:
-        //PORTD = 0x0A;
         PORTD = 10 + Led::getOffset();
-        //SETBITMASK(PORTD, 0x0A);
         break;
     case 3:
-        //PORTD = 0x09;
         PORTD = 9 + Led::getOffset();
-        //SETBITMASK(PORTD, 0x09);
         break;
     }
 }
-
-//setPin(1, true);
-        //setPin(2, false);
-        //setPin(3, true);
-        //setPin(4, false);
-
-//setPin(1, false);
-        //setPin(2, true);
-        //setPin(3, true);
-        //setPin(4, false);
-
-//setPin(1, false);
-        //setPin(2, true);
-        //setPin(3, false);
-        //setPin(4, true);
-
-//setPin(1, true);
-        //setPin(2, false);
-        //setPin(3, false);
-        //setPin(4, true);
