@@ -42,16 +42,6 @@ void setPin(const uint8_t pin, const bool state)
     }
 }
 
-StepperMotor::StepperMotor()
-{
-
-}
-
-StepperMotor::~StepperMotor()
-{
-
-}
-
 void StepperMotor::move(const int numberOfSteps)
 {
     int remainingSteps = abs(numberOfSteps);

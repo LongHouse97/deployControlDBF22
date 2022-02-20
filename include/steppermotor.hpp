@@ -16,9 +16,9 @@ namespace aviware
         class StepperMotor
         {
         public:
-            StepperMotor();
+            StepperMotor() = default;
 
-            ~StepperMotor();
+            ~StepperMotor() = default;
 
             void move(const int numberOfSteps);
 
