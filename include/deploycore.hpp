@@ -22,7 +22,7 @@ namespace aviware
 
             ~DeployCore() = default;
 
-            static void initialize();
+            void initialize();
 
             void run();
 

@@ -18,7 +18,7 @@ using namespace aviware::jA;
 
 DeployCore::DeployCore()
 {
-
+    initialize();
 }
 
 void DeployCore::initialize()
