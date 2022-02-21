@@ -68,6 +68,7 @@ set(SRC_FILES
     src/deploycore.cpp
     src/main.cpp
     src/motorcontroller.cpp
+    src/servo.cpp
     src/statusleds.cpp
     src/steppermotor.cpp
 )

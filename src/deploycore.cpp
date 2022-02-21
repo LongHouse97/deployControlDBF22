@@ -40,12 +40,20 @@ void DeployCore::initialize()
     // PORT D
     //DDRD = 0x6F;
 
+    TCCR1A|=(1<<COM1A1)|(1<<COM1B1)|(1<<WGM11);        //NON Inverted PWM
+    TCCR1B|=(1<<WGM13)|(1<<WGM12)|(1<<CS11)|(1<<CS10); //PRESCALER=64 MODE 14(FAST PWM)
+    ICR1=2499;
+
+    DDRC |=  (1 << PC5);    // Aux 3 -> Ramp Servo
+    DDRC |=  (1 << PC6);    // Aux 4 -> Generic PWM
+
     DDRD |=  (1 << PD0);    // Motor Pin 1
     DDRD |=  (1 << PD1);    // Motor Pin 2
     DDRD |=  (1 << PD2);    // Motor Pin 3
     DDRD |=  (1 << PD3);    // Motor Pin 4
     DDRD |=  (1 << PD5);    // LED 1
     DDRD |=  (1 << PD6);    // LED 2
+    
 }
 
 void DeployCore::run()
@@ -55,15 +63,18 @@ void DeployCore::run()
         update();
     }   
 }
-
+// 2250 - 2375
 void DeployCore::update()
 {
+    
     Led::setStatusLed(1, true);
     Led::setStatusLed(2, false);
+    m_servo.setAngle(0);
     m_controller.move(4000);
-    _delay_ms(250);
+    _delay_ms(50);
     Led::setStatusLed(1, false);
     Led::setStatusLed(2, true);
+    m_servo.setAngle(180);
     m_controller.move(-4000);
-    _delay_ms(250);
+    _delay_ms(50);
 }

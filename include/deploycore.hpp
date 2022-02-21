@@ -10,6 +10,7 @@
 #define DEPLOYCORE_HPP
 
 #include "motorcontroller.hpp"
+#include "servo.hpp"
 
 namespace aviware
 {
@@ -31,6 +32,8 @@ namespace aviware
         private:
 
             MotorController m_controller{};
+
+            Servo m_servo{};
         }; // class DeployCore
         
     } // namespace jA
