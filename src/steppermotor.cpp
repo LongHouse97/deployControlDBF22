@@ -22,26 +22,6 @@ static volatile int currentStep = 0;
 
 static constexpr long long stepDelay = 60000000UL / ( stepsPerRevolution * 360UL );
 
-
-void setPin(const uint8_t pin, const bool state)
-{
-    switch (pin)
-    {
-        case 1:
-            state ? PORTD |= (1 << PD0) : PORTD &= ~(1 << PD0);
-            break;
-        case 2:
-            state ? PORTD |= (1 << PD1) : PORTD &= ~(1 << PD1);
-            break;
-        case 3:
-            state ? PORTD |= (1 << PD2) : PORTD &= ~(1 << PD2);
-            break;
-        case 4:
-            state ? PORTD |= (1 << PD3) : PORTD &= ~(1 << PD3);
-            break;
-    }
-}
-
 void StepperMotor::move(const int numberOfSteps)
 {
     int remainingSteps = abs(numberOfSteps);

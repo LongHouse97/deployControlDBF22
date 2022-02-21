@@ -77,4 +77,9 @@ void DeployCore::update()
     m_servo.setAngle(180);
     m_controller.move(-4000);
     _delay_ms(50);
+    for (int i = 0; i < 60; i++)
+    {
+        _delay_ms(1000);
+    }
+    
 }

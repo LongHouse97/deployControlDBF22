@@ -10,10 +10,6 @@
 
 using namespace aviware::jA;
 
-static constexpr int numberOfSteps = 200;
-
-//StepperMotor motor(330);
-
 MotorController::MotorController()
 {
     

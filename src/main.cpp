@@ -11,7 +11,7 @@
 int main()
 {
     aviware::jA::DeployCore core;
-    //aviware::jA::DeployCore::initialize();
+    
     core.run();
 
     return 0;
