@@ -20,7 +20,7 @@ static constexpr int stepsPerRevolution = 200;
 
 static volatile int currentStep = 0;
 
-static constexpr long long stepDelay = 60000000UL / ( stepsPerRevolution * 360UL );
+static constexpr long long stepDelay = 90000000UL / ( stepsPerRevolution * 360UL );
 
 void StepperMotor::move(const int numberOfSteps)
 {
