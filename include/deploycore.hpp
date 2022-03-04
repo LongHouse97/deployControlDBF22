@@ -9,6 +9,8 @@
 #ifndef DEPLOYCORE_HPP
 #define DEPLOYCORE_HPP
 
+#include <stdio.h>
+
 #include "motorcontroller.hpp"
 #include "servo.hpp"
 
@@ -19,7 +21,7 @@ namespace aviware
         class DeployCore
         {
         public:
-            DeployCore();
+            DeployCore(const int stepsPerPackage);
 
             ~DeployCore() = default;
 
@@ -27,13 +29,21 @@ namespace aviware
 
             void run();
 
+        private:
+
             void update();
 
-        private:
+            void deploy();
 
             MotorController m_controller{};
 
             Servo m_servo{};
+
+            const int8_t m_packageCount = 5;
+
+            int8_t m_deployedCount = 0;
+
+            const int m_stepsPerPackage;
         }; // class DeployCore
         
     } // namespace jA

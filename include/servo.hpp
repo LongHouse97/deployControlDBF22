@@ -21,7 +21,6 @@ namespace aviware
             ~Servo() = default;
 
             void setAngle(int angle);
-        private:
         }; // class Servo
 
     } // namespace jA

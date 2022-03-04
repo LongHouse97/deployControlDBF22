@@ -10,8 +10,8 @@
 
 int main()
 {
-    aviware::jA::DeployCore core;
-    
+    aviware::jA::DeployCore core{500};
+
     core.run();
 
     return 0;
