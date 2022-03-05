@@ -97,6 +97,7 @@ void DeployCore::deploy()
         m_deployedCount++;
         m_servo.setAngle(0); // Open Close?
         m_controller.move(-m_stepsPerPackage * m_deployedCount);
+        _delay_ms(50);
         m_controller.home();
         m_servo.setAngle(180);
     }else

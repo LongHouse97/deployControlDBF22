@@ -20,8 +20,6 @@ static volatile bool deploy = false;
 
 static volatile bool brake = false;
 
-
-
 bool PwmRead::isDeployTriggered()
 {
     return deploy;
