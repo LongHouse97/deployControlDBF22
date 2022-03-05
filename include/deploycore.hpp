@@ -12,7 +12,6 @@
 #include <stdio.h>
 
 #include "motorcontroller.hpp"
-#include "servo.hpp"
 
 namespace aviware
 {
@@ -36,8 +35,6 @@ namespace aviware
             void deploy();
 
             MotorController m_controller{};
-
-            Servo m_servo{};
 
             const int8_t m_packageCount = 5;
 

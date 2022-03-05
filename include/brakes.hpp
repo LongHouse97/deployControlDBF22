@@ -3,30 +3,26 @@
 // Author: Arian Ghoddousi, BSc
 // Contact: arian.ghoddousi@aviware.net 
 // Project: joanneum Aeronautics | AIAA DBF 22 | Package Deployment
-// Date: 17 Feb 2022
+// Date: 05 March 2022
 //
 
-#ifndef STEPPERMOTOR_HPP
-#define STEPPERMOTOR_HPP
+#ifndef BRAKES_HPP
+#define BRAKES_HPP
 
 namespace aviware
 {
     namespace jA
     {
-        class StepperMotor
+        class Brakes
         {
         public:
+            static void setBrakeIntensity(const int intensity);
 
-            static void move(const int numberOfSteps);
-
-        private:
-
-            static void singleStep();
-
-        }; // class StepperMotor
+        }; // class Brakes;
         
     } // namespace jA
     
 } // namespace aviware
 
-#endif // !STEPPERMOTOR_HPP
+
+#endif // !BRAKES_HPP

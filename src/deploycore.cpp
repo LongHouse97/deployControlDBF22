@@ -10,9 +10,11 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "brakes.hpp"
 #include "deploycore.hpp"
 #include "motorcontroller.hpp"
 #include "pwmread.hpp"
+#include "servo.hpp"
 #include "statusleds.hpp"
 
 using namespace aviware::jA;
@@ -56,7 +58,7 @@ void DeployCore::initialize()
     Led::setStatusLed(1, true);
     Led::setStatusLed(2, true);
 
-    m_servo.setAngle(180);
+    Servo::setAngle(180);
 }
 
 void DeployCore::run()
@@ -73,10 +75,12 @@ void DeployCore::update()
     {
         // TODO Control Brakes
         Led::setStatusLed(1, false);
+        Brakes::setBrakeIntensity(PwmRead::getBrakeIntensity());
     }else
     {
         Led::setStatusLed(1, true);
         PwmRead::resetBrakeFlag();
+        Brakes::setBrakeIntensity(0);
     }
     if (PwmRead::isDeployTriggered())
     {
@@ -95,11 +99,11 @@ void DeployCore::deploy()
     {
         Led::setStatusLed(2, false);
         m_deployedCount++;
-        m_servo.setAngle(0); // Open Close?
+        Servo::setAngle(0); // Open Close?
         m_controller.move(-m_stepsPerPackage * m_deployedCount);
         _delay_ms(50);
         m_controller.home();
-        m_servo.setAngle(180);
+        Servo::setAngle(180);
     }else
     {
         for (size_t i = 0; i < 8; i++)

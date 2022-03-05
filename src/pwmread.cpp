@@ -20,6 +20,8 @@ static volatile bool deploy = false;
 
 static volatile bool brake = false;
 
+static volatile int brakeIntensity = 0;
+
 bool PwmRead::isDeployTriggered()
 {
     return deploy;
@@ -62,9 +64,17 @@ ISR(INT4_vect)
     {
         //TODO: Map Break Intensity
         brake = true;
+
+        brakeIntensity = (int)(- 100 / 544 * TIMER2US(dT) + 100 * 2016 / 544);
     }else
     {
         deploy = false;
         brake = false;
+        brakeIntensity = 0;
     }
+}
+
+int PwmRead::getBrakeIntensity()
+{
+    return brakeIntensity;
 }

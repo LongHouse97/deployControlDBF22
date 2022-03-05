@@ -7,8 +7,11 @@
 //
 
 #include "motorcontroller.hpp"
+#include "steppermotor.hpp"
 
 using namespace aviware::jA;
+
+static int currentPosition = 0;
 
 MotorController::MotorController()
 {
@@ -17,19 +20,19 @@ MotorController::MotorController()
 
 void MotorController::move(const int steps)
 {
-    m_currentPosition += steps;
+    currentPosition += steps;
 
-    m_motor.move(steps);
+    StepperMotor::move(steps);
 }
 
 void MotorController::home()
 {
-    m_motor.move(-m_currentPosition);
+    StepperMotor::move(-currentPosition);
 
     resetSteps();
 }
 
 void MotorController::resetSteps() 
 {
-    m_currentPosition = 0;
+    currentPosition = 0;
 }

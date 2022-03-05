@@ -9,8 +9,6 @@
 #ifndef MOTOR_CONTROLLER_HPP
 #define MOTOR_CONTROLLER_HPP
 
-#include "steppermotor.hpp"
-
 namespace aviware
 {
     namespace jA
@@ -32,7 +30,6 @@ namespace aviware
 
             int m_currentPosition = 0;
 
-            StepperMotor m_motor{};
         }; // class MotorController
 
     } // namespace jA

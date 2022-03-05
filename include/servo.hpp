@@ -16,11 +16,7 @@ namespace aviware
         class Servo
         {
         public:
-            Servo() = default;
-
-            ~Servo() = default;
-
-            void setAngle(int angle);
+            static void setAngle(int angle);
         }; // class Servo
 
     } // namespace jA

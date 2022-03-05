@@ -65,6 +65,7 @@ add_compile_options(
 )
 
 set(SRC_FILES 
+    src/brakes.cpp
     src/deploycore.cpp
     src/main.cpp
     src/motorcontroller.cpp
