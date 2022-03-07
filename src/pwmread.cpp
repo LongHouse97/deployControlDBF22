@@ -8,6 +8,7 @@
 
 #include <avr/interrupt.h>
 
+#include "brakeintensity.hpp"
 #include "pwmread.hpp"
 
 #define TIMER2US(x) (x * 32) 
@@ -20,7 +21,7 @@ static volatile bool deploy = false;
 
 static volatile bool brake = false;
 
-static volatile int brakeIntensity = 0;
+static volatile BrakeIntensity brakeIntensity = BrakeIntensity::NONE;
 
 bool PwmRead::isDeployTriggered()
 {
@@ -62,15 +63,47 @@ ISR(INT4_vect)
         deploy = true;
     }else if (TIMER2US(dT) >= 1472 && TIMER2US(dT) <= 2016)
     {
-        //TODO: Map Break Intensity
         brake = true;
+        /*
+        brakeIntensity = (370 - 100 / 544 * TIMER2US(dT));
 
-        brakeIntensity = (int)(- 100 / 544 * TIMER2US(dT) + 100 * 2016 / 544);
+        if (brakeIntensity <= 0)
+        {  
+            brakeIntensity = 0;
+        }else if (brakeIntensity >= 100)
+        {
+            brakeIntensity = 100;
+        }*/
+        
+        if (TIMER2US(dT) >= 1472 && TIMER2US(dT) < 1505)
+        {
+            brakeIntensity = BrakeIntensity::MAX;
+        }else if (TIMER2US(dT) >= 1505 && TIMER2US(dT) < 1600)
+        {
+            brakeIntensity = BrakeIntensity::HIGH;
+        }else if (TIMER2US(dT) >= 1600 && TIMER2US(dT) < 1700)
+        {
+            brakeIntensity = BrakeIntensity::MEDIUM_HIGH;
+        }else if (TIMER2US(dT) >= 1700 && TIMER2US(dT) < 1800)
+        {
+            brakeIntensity = BrakeIntensity::MEDIUM;
+        }else if (TIMER2US(dT) >= 1800 && TIMER2US(dT) < 1900)
+        {
+            brakeIntensity = BrakeIntensity::MEDIUM_LOW;
+        }else if (TIMER2US(dT) >= 1900 && TIMER2US(dT) < 2000)
+        {
+            brakeIntensity = BrakeIntensity::LOW;
+        }else if (TIMER2US(dT) >= 2000)
+        {
+            brakeIntensity = BrakeIntensity::NONE;
+        }
+        
+
     }else
     {
         deploy = false;
         brake = false;
-        brakeIntensity = 0;
+        brakeIntensity = BrakeIntensity::NONE;
     }
 }
 

@@ -17,6 +17,10 @@ namespace aviware
         {
         public:
             static void setAngle(int angle);
+
+            static void open();
+
+            static void close();
         }; // class Servo
 
     } // namespace jA

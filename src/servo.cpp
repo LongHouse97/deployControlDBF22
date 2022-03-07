@@ -12,9 +12,9 @@
 
 using namespace aviware::jA;
 
-static constexpr int lowerLimit = 75;
+static constexpr int lowerLimit = 125; // default 75
 
-static constexpr int upperLimit = 300;
+static constexpr int upperLimit = 225; // default 300
 
 volatile float currentAngle = lowerLimit;
 
@@ -31,4 +31,14 @@ void Servo::setAngle(int angle)
     currentAngle = (angle / 180) * (upperLimit - lowerLimit) + lowerLimit;
 
     OCR1B = (int)currentAngle;
+}
+
+void Servo::open()
+{
+    OCR1B = lowerLimit;
+}
+
+void Servo::close()
+{
+    OCR1B = upperLimit;
 }

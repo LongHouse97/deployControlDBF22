@@ -33,7 +33,7 @@ void DeployCore::initialize()
     */
 
     DDRC |=  (1 << DDC5);    // Aux 3 -> Ramp Servo
-    DDRC |=  (1 << DDC6);    // Aux 4 -> Generic PWM
+    DDRC |=  (1 << DDC6);    // Aux 4 -> Brake Signal
 
     DDRD |=  (1 << DDD0);    // Motor Pin 1
     DDRD |=  (1 << DDD1);    // Motor Pin 2
@@ -58,7 +58,7 @@ void DeployCore::initialize()
     Led::setStatusLed(1, true);
     Led::setStatusLed(2, true);
 
-    Servo::setAngle(180);
+    Servo::close();
 }
 
 void DeployCore::run()
@@ -99,11 +99,11 @@ void DeployCore::deploy()
     {
         Led::setStatusLed(2, false);
         m_deployedCount++;
-        Servo::setAngle(0); // Open Close?
+        Servo::open(); // Open Close?
         m_controller.move(-m_stepsPerPackage * m_deployedCount);
-        _delay_ms(50);
         m_controller.home();
-        Servo::setAngle(180);
+        _delay_ms(1000);
+        Servo::close();
     }else
     {
         for (size_t i = 0; i < 8; i++)
