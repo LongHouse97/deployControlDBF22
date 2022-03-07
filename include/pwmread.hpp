@@ -15,6 +15,8 @@ namespace aviware
 {
     namespace jA
     {
+        enum BrakeIntensity;
+
         class PwmRead
         {
         public:
@@ -30,7 +32,7 @@ namespace aviware
 
             static void resetBrakeFlag();
 
-            static int getBrakeIntensity();
+            static BrakeIntensity getBrakeIntensity();
             
         }; // class PwmRead
     } // namespace jA

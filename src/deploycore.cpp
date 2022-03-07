@@ -11,6 +11,7 @@
 #include <util/delay.h>
 
 #include "brakes.hpp"
+#include "brakeintensity.hpp"
 #include "deploycore.hpp"
 #include "motorcontroller.hpp"
 #include "pwmread.hpp"
@@ -71,26 +72,25 @@ void DeployCore::run()
 
 void DeployCore::update()
 {
-    if(PwmRead::isBrakeTriggered())
-    {
-        // TODO Control Brakes
-        Led::setStatusLed(1, false);
-        Brakes::setBrakeIntensity(PwmRead::getBrakeIntensity());
-    }else
-    {
-        Led::setStatusLed(1, true);
-        PwmRead::resetBrakeFlag();
-        Brakes::setBrakeIntensity(0);
-    }
     if (PwmRead::isDeployTriggered())
     {
         // Start Deploy Sequence
         deploy();
-        _delay_ms(25);
+        _delay_ms(250);
         PwmRead::resetDeployFlag();
+    }else if(PwmRead::isBrakeTriggered())
+    {
+        Led::setStatusLed(1, false);
+        Brakes::setBrakeIntensity(PwmRead::getBrakeIntensity());
+        sei();
+    }else
+    {
+        Led::setStatusLed(1, true);
+        PwmRead::resetBrakeFlag();
+        Brakes::setBrakeIntensity(BrakeIntensity::NONE);
     }
-        
-    sei();
+    
+    
 }
 
 void DeployCore::deploy()
@@ -99,10 +99,10 @@ void DeployCore::deploy()
     {
         Led::setStatusLed(2, false);
         m_deployedCount++;
-        Servo::open(); // Open Close?
+        Servo::open();
         m_controller.move(-m_stepsPerPackage * m_deployedCount);
         m_controller.home();
-        _delay_ms(1000);
+        _delay_ms(500);
         Servo::close();
     }else
     {
@@ -115,4 +115,5 @@ void DeployCore::deploy()
         }
     }
     Led::setStatusLed(2, true);
+    sei();
 }

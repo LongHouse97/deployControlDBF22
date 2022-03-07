@@ -20,7 +20,7 @@ static constexpr int upperLimit = 2498;
 
 static const int brakeAction[] = {0, 250, 500, 1000, 1500, 2000, 2498};
 
-void Brakes::setBrakeIntensity(const int intensity)
+void Brakes::setBrakeIntensity(const BrakeIntensity intensity)
 {
     //brakeAction = (intensity / 100) * (upperLimit - lowerLimit) + lowerLimit;
 

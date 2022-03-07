@@ -6,6 +6,7 @@
 // Date: 17 Feb 2022
 //
 
+#include <util/delay.h>
 #include <avr/interrupt.h>
 
 #include "brakeintensity.hpp"
@@ -22,6 +23,8 @@ static volatile bool deploy = false;
 static volatile bool brake = false;
 
 static volatile BrakeIntensity brakeIntensity = BrakeIntensity::NONE;
+
+using namespace aviware::jA;
 
 bool PwmRead::isDeployTriggered()
 {
@@ -45,7 +48,7 @@ void PwmRead::resetBrakeFlag()
 
 ISR(INT4_vect)
 {
-    cli();
+    
     if (EICRB & (1 << ISC41)) 
     {
         TCNT0 = 0;
@@ -60,20 +63,13 @@ ISR(INT4_vect)
 
     if (TIMER2US(dT) >= 896 && TIMER2US(dT) <= 1248)
     {
+        cli();
+        _delay_ms(50);
         deploy = true;
-    }else if (TIMER2US(dT) >= 1472 && TIMER2US(dT) <= 2016)
+    }else if (TIMER2US(dT) >= 1472)
     {
+        _delay_ms(50);
         brake = true;
-        /*
-        brakeIntensity = (370 - 100 / 544 * TIMER2US(dT));
-
-        if (brakeIntensity <= 0)
-        {  
-            brakeIntensity = 0;
-        }else if (brakeIntensity >= 100)
-        {
-            brakeIntensity = 100;
-        }*/
         
         if (TIMER2US(dT) >= 1472 && TIMER2US(dT) < 1505)
         {
@@ -96,18 +92,14 @@ ISR(INT4_vect)
         }else if (TIMER2US(dT) >= 2000)
         {
             brakeIntensity = BrakeIntensity::NONE;
-        }
-        
-
-    }else
-    {
-        deploy = false;
-        brake = false;
-        brakeIntensity = BrakeIntensity::NONE;
+            deploy = false;
+            brake = false;
+            brakeIntensity = BrakeIntensity::NONE;
+        }    
     }
 }
 
-int PwmRead::getBrakeIntensity()
+BrakeIntensity PwmRead::getBrakeIntensity()
 {
     return brakeIntensity;
 }

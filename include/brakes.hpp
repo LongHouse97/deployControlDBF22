@@ -9,6 +9,8 @@
 #ifndef BRAKES_HPP
 #define BRAKES_HPP
 
+#include "brakeintensity.hpp"
+
 namespace aviware
 {
     namespace jA
@@ -16,7 +18,7 @@ namespace aviware
         class Brakes
         {
         public:
-            static void setBrakeIntensity(const int intensity);
+            static void setBrakeIntensity(const BrakeIntensity intensity);
 
         }; // class Brakes;
         
