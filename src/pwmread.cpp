@@ -68,6 +68,7 @@ ISR(INT4_vect)
         deploy = true;
     }else if (TIMER2US(dT) >= 1472)
     {
+        cli();
         _delay_ms(50);
         brake = true;
         
@@ -91,6 +92,7 @@ ISR(INT4_vect)
             brakeIntensity = BrakeIntensity::LOW;
         }else if (TIMER2US(dT) >= 2000)
         {
+            sei();
             brakeIntensity = BrakeIntensity::NONE;
             deploy = false;
             brake = false;

@@ -85,6 +85,7 @@ void DeployCore::update()
         sei();
     }else
     {
+        sei();
         Led::setStatusLed(1, true);
         PwmRead::resetBrakeFlag();
         Brakes::setBrakeIntensity(BrakeIntensity::NONE);
