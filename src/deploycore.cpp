@@ -72,13 +72,7 @@ void DeployCore::run()
 
 void DeployCore::update()
 {
-    if (PwmRead::isDeployTriggered())
-    {
-        // Start Deploy Sequence
-        deploy();
-        _delay_ms(250);
-        PwmRead::resetDeployFlag();
-    }else if(PwmRead::isBrakeTriggered())
+    if(PwmRead::isBrakeTriggered())
     {
         Led::setStatusLed(1, false);
         Brakes::setBrakeIntensity(PwmRead::getBrakeIntensity());
@@ -88,7 +82,13 @@ void DeployCore::update()
         PwmRead::resetBrakeFlag();
         Brakes::setBrakeIntensity(BrakeIntensity::NONE);
     }
-    
+    if (PwmRead::isDeployTriggered())
+    {
+        // Start Deploy Sequence
+        deploy();
+        _delay_ms(250);
+        PwmRead::resetDeployFlag();
+    }
     sei();
 }
 
