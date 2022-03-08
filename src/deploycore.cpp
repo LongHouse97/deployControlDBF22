@@ -85,7 +85,7 @@ void DeployCore::update()
     if (PwmRead::isDeployTriggered())
     {
         // Start Deploy Sequence
-        deploy();
+        //deploy();
         _delay_ms(250);
         PwmRead::resetDeployFlag();
     }

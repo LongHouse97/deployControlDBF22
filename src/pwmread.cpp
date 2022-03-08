@@ -63,10 +63,7 @@ ISR(INT4_vect)
         dT = TCNT0;
     }
 
-    if (TIMER2US(dT) >= 896 && TIMER2US(dT) <= 1248)
-    {
-        deploy = true;
-    }else if (TIMER2US(dT) >= 1472)
+    if (TIMER2US(dT) >= 1472)
     {
         brake = true;
         
@@ -96,6 +93,14 @@ ISR(INT4_vect)
             brake = false;
         }    
     }
+    if (brakeIntensity == BrakeIntensity::MAX)
+    {
+        if (TIMER2US(dT) >= 896 && TIMER2US(dT) <= 1248)
+        {
+            deploy = true;
+        }
+    }
+    
 }
 
 BrakeIntensity PwmRead::getBrakeIntensity()
