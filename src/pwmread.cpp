@@ -65,12 +65,9 @@ ISR(INT4_vect)
 
     if (TIMER2US(dT) >= 896 && TIMER2US(dT) <= 1248)
     {
-        
-        _delay_ms(50);
         deploy = true;
     }else if (TIMER2US(dT) >= 1472)
     {
-        _delay_ms(50);
         brake = true;
         
         if (TIMER2US(dT) >= 1472 && TIMER2US(dT) < 1505)
@@ -97,7 +94,6 @@ ISR(INT4_vect)
             brakeIntensity = BrakeIntensity::NONE;
             deploy = false;
             brake = false;
-            brakeIntensity = BrakeIntensity::NONE;
         }    
     }
 }
