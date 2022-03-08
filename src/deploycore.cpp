@@ -82,16 +82,14 @@ void DeployCore::update()
     {
         Led::setStatusLed(1, false);
         Brakes::setBrakeIntensity(PwmRead::getBrakeIntensity());
-        sei();
     }else
     {
-        sei();
         Led::setStatusLed(1, true);
         PwmRead::resetBrakeFlag();
         Brakes::setBrakeIntensity(BrakeIntensity::NONE);
     }
     
-    
+    sei();
 }
 
 void DeployCore::deploy()
@@ -116,5 +114,4 @@ void DeployCore::deploy()
         }
     }
     Led::setStatusLed(2, true);
-    sei();
 }

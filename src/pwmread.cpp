@@ -49,6 +49,8 @@ void PwmRead::resetBrakeFlag()
 ISR(INT4_vect)
 {
     
+    cli();
+
     if (EICRB & (1 << ISC41)) 
     {
         TCNT0 = 0;
@@ -63,12 +65,11 @@ ISR(INT4_vect)
 
     if (TIMER2US(dT) >= 896 && TIMER2US(dT) <= 1248)
     {
-        cli();
+        
         _delay_ms(50);
         deploy = true;
     }else if (TIMER2US(dT) >= 1472)
     {
-        cli();
         _delay_ms(50);
         brake = true;
         
