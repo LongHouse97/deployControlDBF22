@@ -27,3 +27,13 @@ void Brakes::setBrakeIntensity(const BrakeIntensity intensity)
     OCR1A = brakeAction[intensity];
     //OCR1A = 0;
 }
+
+void Brakes::activate()
+{
+    PORTC |= (1 << PC6);
+}
+
+void Brakes::release()
+{
+    PORTC &= ~(1 << PC6);
+}

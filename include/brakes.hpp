@@ -20,6 +20,10 @@ namespace aviware
         public:
             static void setBrakeIntensity(const BrakeIntensity intensity);
 
+            static void activate();
+
+            static void release();
+
         }; // class Brakes;
         
     } // namespace jA

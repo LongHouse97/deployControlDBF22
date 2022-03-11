@@ -21,12 +21,12 @@ namespace aviware
 
             ~MotorController() = default;
 
-            void move(const int steps);
+            static void move(const int steps);
 
-            void home();
+            static void home();
 
         private:
-            void resetSteps();
+            static void resetSteps();
 
             int m_currentPosition = 0;
 

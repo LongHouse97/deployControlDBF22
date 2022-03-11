@@ -14,16 +14,58 @@
 #include "brakeintensity.hpp"
 #include "deploycore.hpp"
 #include "motorcontroller.hpp"
-#include "pwmread.hpp"
 #include "servo.hpp"
 #include "statusleds.hpp"
 
+#define TIMER2US(x) (x * 8) 
+
 using namespace aviware::jA;
 
-DeployCore::DeployCore(const int stepsPerPackage) :
-    m_stepsPerPackage(stepsPerPackage)
+static volatile uint8_t dT;
+
+static const int8_t packageCount = 5;
+
+static int8_t deployedCount = 0;
+
+static int stepsPerPackage = 500;
+
+void deploy();
+
+DeployCore::DeployCore()
 {
     initialize();
+}
+
+ISR(INT4_vect)
+{
+    
+
+    if (EICRB & (1 << ISC41)) 
+    {
+        TCNT0 = 0;
+        // falling edge next
+        EICRB &= ~(1<<ISC41);
+    } else 
+    {
+        // rising edge next
+        EICRB |= (1 << ISC41);
+        dT = TCNT0;
+        cli();
+    }
+
+    if (TIMER2US(dT) >= 1472 && TIMER2US(dT) <= 2016)
+    {
+        Brakes::activate();
+        Led::setStatusLed(1, false);
+    }else
+    {
+        Brakes::release();
+        Led::setStatusLed(1, true);
+    }
+    if (TIMER2US(dT) >= 896 && TIMER2US(dT) <= 1248)
+    {
+        deploy();
+    }
 }
 
 void DeployCore::initialize()
@@ -43,7 +85,8 @@ void DeployCore::initialize()
     DDRD |=  (1 << DDD5);    // LED 1
     DDRD |=  (1 << DDD6);    // LED 2
 
-    TCCR0B |= (1 << CS02);  // Prescaler 256 for Timer 0B
+    TCCR0B |= (1 << CS00);  // Prescaler 64 for Timer 0B
+    TCCR0B |= (1 << CS01);
 
     PORTC |= (1 << PC7);    // Activate pullupressistor of PC7
     EIMSK |= (1 << INT4);   
@@ -66,41 +109,19 @@ void DeployCore::run()
 {
     while (true)
     {
-        update();
+        sei();
     }   
 }
 
-void DeployCore::update()
-{
-    if(PwmRead::isBrakeTriggered())
-    {
-        Led::setStatusLed(1, false);
-        Brakes::setBrakeIntensity(PwmRead::getBrakeIntensity());
-    }else
-    {
-        Led::setStatusLed(1, true);
-        PwmRead::resetBrakeFlag();
-        Brakes::setBrakeIntensity(BrakeIntensity::NONE);
-    }
-    if (PwmRead::isDeployTriggered())
-    {
-        // Start Deploy Sequence
-        //deploy();
-        _delay_ms(250);
-        PwmRead::resetDeployFlag();
-    }
-    sei();
-}
-
-void DeployCore::deploy()
+void deploy()
 {   
-    if (m_deployedCount < m_packageCount)
+    if (deployedCount < packageCount)
     {
         Led::setStatusLed(2, false);
-        m_deployedCount++;
+        deployedCount++;
         Servo::open();
-        m_controller.move(-m_stepsPerPackage * m_deployedCount);
-        m_controller.home();
+        MotorController::move(-stepsPerPackage * deployedCount);
+        MotorController::home();
         _delay_ms(500);
         Servo::close();
     }else

@@ -20,7 +20,7 @@ namespace aviware
         class DeployCore
         {
         public:
-            DeployCore(const int stepsPerPackage);
+            DeployCore();
 
             ~DeployCore() = default;
 
@@ -32,15 +32,8 @@ namespace aviware
 
             void update();
 
-            void deploy();
-
             MotorController m_controller{};
 
-            const int8_t m_packageCount = 5;
-
-            int8_t m_deployedCount = 0;
-
-            const int m_stepsPerPackage;
         }; // class DeployCore
         
     } // namespace jA
