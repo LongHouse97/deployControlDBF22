@@ -13,7 +13,6 @@ namespace aviware
 {
     namespace jA
     {
-
         class MotorController
         {
         public:
@@ -24,11 +23,6 @@ namespace aviware
             static void move(const int steps);
 
             static void home();
-
-        private:
-            static void resetSteps();
-
-            int m_currentPosition = 0;
 
         }; // class MotorController
 

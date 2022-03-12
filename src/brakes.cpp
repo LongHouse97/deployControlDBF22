@@ -24,7 +24,7 @@ void Brakes::setBrakeIntensity(const BrakeIntensity intensity)
 {
     //brakeAction = (intensity / 100) * (upperLimit - lowerLimit) + lowerLimit;
 
-    OCR1A = brakeAction[intensity];
+    //OCR1A = brakeAction[intensity];
     //OCR1A = 0;
 }
 

@@ -38,8 +38,6 @@ DeployCore::DeployCore()
 
 ISR(INT4_vect)
 {
-    
-
     if (EICRB & (1 << ISC41)) 
     {
         TCNT0 = 0;
@@ -50,21 +48,47 @@ ISR(INT4_vect)
         // rising edge next
         EICRB |= (1 << ISC41);
         dT = TCNT0;
-        cli();
     }
 
     if (TIMER2US(dT) >= 1472 && TIMER2US(dT) <= 2016)
     {
-        Brakes::activate();
+        //Brakes::activate();
+        PORTC |= (1 << PC4);
         Led::setStatusLed(1, false);
     }else
     {
-        Brakes::release();
+        //Brakes::release();
+        PORTC &= ~(1 << PC4);
         Led::setStatusLed(1, true);
     }
-    if (TIMER2US(dT) >= 896 && TIMER2US(dT) <= 1248)
+    if (TIMER2US(dT) >= 920 && TIMER2US(dT) <= 1080) // old Value 1248
     {
-        deploy();
+        cli();
+        dT = 0;
+        //deploy();
+        if (deployedCount < packageCount)
+        {
+            Led::setStatusLed(2, false);
+            deployedCount++;
+            Servo::open();
+            //MotorController::move(-stepsPerPackage * deployedCount);
+            //MotorController::home();
+            _delay_ms(500);
+            Servo::close();
+            _delay_ms(1000);
+        }else
+        {
+            for (size_t i = 0; i < 8; i++)
+            {
+                Led::setStatusLed(2, false);
+                _delay_ms(250);
+                Led::setStatusLed(2, true);
+                _delay_ms(250);
+            }
+        }
+        Led::setStatusLed(2, true);
+        SETBIT(PORTC, PC7);
+        sei();
     }
 }
 
@@ -75,8 +99,8 @@ void DeployCore::initialize()
         DDRx |= (1 << Pxn);  -> Ausgang
     */
 
+    DDRC |=  (1 << DDC4);    // Aux 2 -> Brake Signal
     DDRC |=  (1 << DDC5);    // Aux 3 -> Ramp Servo
-    DDRC |=  (1 << DDC6);    // Aux 4 -> Brake Signal
 
     DDRD |=  (1 << DDD0);    // Motor Pin 1
     DDRD |=  (1 << DDD1);    // Motor Pin 2
@@ -103,18 +127,21 @@ void DeployCore::initialize()
     Led::setStatusLed(2, true);
 
     Servo::close();
+
+    sei();
 }
 
 void DeployCore::run()
 {
     while (true)
     {
-        sei();
+
     }   
 }
 
 void deploy()
 {   
+    cli();
     if (deployedCount < packageCount)
     {
         Led::setStatusLed(2, false);
@@ -124,6 +151,7 @@ void deploy()
         MotorController::home();
         _delay_ms(500);
         Servo::close();
+        _delay_ms(2000);
     }else
     {
         for (size_t i = 0; i < 8; i++)
@@ -135,4 +163,6 @@ void deploy()
         }
     }
     Led::setStatusLed(2, true);
+    _delay_ms(2000);
+    sei();
 }

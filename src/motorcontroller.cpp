@@ -29,10 +29,5 @@ void MotorController::home()
 {
     StepperMotor::move(-currentPosition);
 
-    resetSteps();
-}
-
-void MotorController::resetSteps() 
-{
     currentPosition = 0;
 }

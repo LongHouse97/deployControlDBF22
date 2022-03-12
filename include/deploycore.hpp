@@ -32,8 +32,6 @@ namespace aviware
 
             void update();
 
-            MotorController m_controller{};
-
         }; // class DeployCore
         
     } // namespace jA

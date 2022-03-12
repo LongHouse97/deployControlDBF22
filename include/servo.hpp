@@ -16,8 +16,6 @@ namespace aviware
         class Servo
         {
         public:
-            static void setAngle(int angle);
-
             static void open();
 
             static void close();

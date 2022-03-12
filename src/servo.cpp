@@ -18,21 +18,6 @@ static constexpr int upperLimit = 225; // default 300
 
 volatile float currentAngle = lowerLimit;
 
-void Servo::setAngle(int angle)
-{
-    if (angle > 180)
-    {
-        angle = 180;
-    }else if (angle < 0)
-    {
-        angle = 0;
-    }
-    
-    currentAngle = (angle / 180) * (upperLimit - lowerLimit) + lowerLimit;
-
-    OCR1B = (int)currentAngle;
-}
-
 void Servo::open()
 {
     OCR1B = lowerLimit;
