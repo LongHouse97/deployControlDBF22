@@ -71,8 +71,8 @@ ISR(INT4_vect)
             Led::setStatusLed(2, false);
             deployedCount++;
             Servo::open();
-            //MotorController::move(-stepsPerPackage * deployedCount);
-            //MotorController::home();
+            MotorController::move(-stepsPerPackage * deployedCount);
+            MotorController::home();
             _delay_ms(500);
             Servo::close();
             _delay_ms(1000);
@@ -87,7 +87,7 @@ ISR(INT4_vect)
             }
         }
         Led::setStatusLed(2, true);
-        SETBIT(PORTC, PC7);
+        SETBIT(EIFR, INTF4);
         sei();
     }
 }

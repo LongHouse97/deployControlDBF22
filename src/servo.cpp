@@ -12,9 +12,9 @@
 
 using namespace aviware::jA;
 
-static constexpr int lowerLimit = 125; // default 75
+static constexpr int lowerLimit = 195; // default 75
 
-static constexpr int upperLimit = 225; // default 300
+static constexpr int upperLimit = 267; // default 300
 
 volatile float currentAngle = lowerLimit;
 
