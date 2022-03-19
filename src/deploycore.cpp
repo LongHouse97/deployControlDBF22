@@ -128,10 +128,12 @@ void DeployCore::initialize()
 
     Servo::close();
 
+    _delay_ms(500);
+
     MotorController::move(1);
     _delay_ms(50);
     MotorController::home();
-    
+
     sei();
 }
 
