@@ -41,14 +41,14 @@ ISR(INT4_vect)
         TCNT0 = 0;
         // falling edge next
         CLEARBIT(EICRB, ISC41);
-    } else 
+    }else 
     {
         // rising edge next
         SETBIT(EICRB, ISC41);
         dT = TCNT0;
     }
 
-    if (TIMER2US(dT) >= 1472 && TIMER2US(dT) <= 2016)
+    if (TIMER2US(dT) >= 1472 && TIMER2US(dT) <= 1560)
     {
         // Activate Brakes
         C_SETBIT(BRAKE);
@@ -58,7 +58,7 @@ ISR(INT4_vect)
         C_CLEARBIT(BRAKE);
         Led::setStatusLed(1, true);
     }
-    if (TIMER2US(dT) >= 920 && TIMER2US(dT) <= 1080) // old Value 1248
+    if (TIMER2US(dT) >= 944 && TIMER2US(dT) <= 1040)
     {
         cli();
         dT = 0;                 // Reset dT
