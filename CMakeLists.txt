@@ -64,8 +64,7 @@ add_compile_options(
     -fno-tree-scev-cprop
 )
 
-set(SRC_FILES 
-    src/brakes.cpp
+set(SRC_FILES
     src/deploycore.cpp
     src/main.cpp
     src/motorcontroller.cpp

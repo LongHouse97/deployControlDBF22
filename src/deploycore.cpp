@@ -10,7 +10,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "brakes.hpp"
 #include "brakeintensity.hpp"
 #include "deploycore.hpp"
 #include "motorcontroller.hpp"
@@ -19,15 +18,14 @@
 
 #define TIMER2US(x) (x * 8) 
 
+#define BRAKE PORTC, PC4
+
 using namespace aviware::jA;
 
 static volatile uint8_t dT;
-
-static const int8_t packageCount = 5;
-
-static int8_t deployedCount = 0;
-
-static int stepsPerPackage = 500;
+static volatile int8_t deployedCount = 0;
+static constexpr int8_t packageCount = 5;
+static constexpr int stepsPerPackage = 500;
 
 void deploy();
 
@@ -41,53 +39,30 @@ ISR(INT4_vect)
     if (EICRB & (1 << ISC41)) 
     {
         TCNT0 = 0;
+        dT = 0;                 // Reset dT
         // falling edge next
-        EICRB &= ~(1<<ISC41);
-    } else 
+        CLEARBIT(EICRB, ISC41);
+    }else 
     {
         // rising edge next
-        EICRB |= (1 << ISC41);
+        SETBIT(EICRB, ISC41);
         dT = TCNT0;
     }
 
     if (TIMER2US(dT) >= 1472 && TIMER2US(dT) <= 1560)
-    {
-        //Brakes::activate();
-        PORTC |= (1 << PC4);
+    {   // Activate Brakes
+        C_SETBIT(BRAKE);
         Led::setStatusLed(1, false);
     }else
-    {
-        //Brakes::release();
-        PORTC &= ~(1 << PC4);
+    {   // Release Brakes
+        C_CLEARBIT(BRAKE);
         Led::setStatusLed(1, true);
     }
-    if (TIMER2US(dT) >= 1040 && TIMER2US(dT) <= 1120) // old Value 1248
+    if (TIMER2US(dT) >= 1040 && TIMER2US(dT) <= 1120)
     {
         cli();
-        dT = 0;
-        //deploy();
-        if (deployedCount < packageCount)
-        {
-            Led::setStatusLed(2, false);
-            deployedCount++;
-            Servo::open();
-            MotorController::move(-stepsPerPackage * deployedCount);
-            MotorController::home();
-            _delay_ms(500);
-            Servo::close();
-            _delay_ms(1000);
-        }else
-        {
-            for (size_t i = 0; i < 8; i++)
-            {
-                Led::setStatusLed(2, false);
-                _delay_ms(250);
-                Led::setStatusLed(2, true);
-                _delay_ms(250);
-            }
-        }
-        Led::setStatusLed(2, true);
-        SETBIT(EIFR, INTF4);
+        deploy();
+        SETBIT(EIFR, INTF4);    // Clear Pending Interrupt
         sei();
     }
 }
@@ -99,29 +74,34 @@ void DeployCore::initialize()
         DDRx |= (1 << Pxn);  -> Ausgang
     */
 
-    DDRC |=  (1 << DDC4);    // Aux 2 -> Brake Signal
-    DDRC |=  (1 << DDC5);    // Aux 3 -> Ramp Servo
 
-    DDRD |=  (1 << DDD0);    // Motor Pin 1
-    DDRD |=  (1 << DDD1);    // Motor Pin 2
-    DDRD |=  (1 << DDD2);    // Motor Pin 3
-    DDRD |=  (1 << DDD3);    // Motor Pin 4
-    DDRD |=  (1 << DDD5);    // LED 1
-    DDRD |=  (1 << DDD6);    // LED 2
+    SETBIT(DDRC, DDC4);     // Aux 2 -> Brake Signal
+    SETBIT(DDRC, DDC5);     // Aux 3 -> Ramp Servo
 
-    TCCR0B |= (1 << CS00);  // Prescaler 64 for Timer 0B
-    TCCR0B |= (1 << CS01);
+    SETBIT(DDRD, DDD0);    // Motor Pin 1
+    SETBIT(DDRD, DDD1);    // Motor Pin 2
+    SETBIT(DDRD, DDD2);    // Motor Pin 3
+    SETBIT(DDRD, DDD3);    // Motor Pin 4
+    SETBIT(DDRD, DDD5);    // LED 1
+    SETBIT(DDRD, DDD6);    // LED 2
 
-    PORTC |= (1 << PC7);    // Activate pullupressistor of PC7
-    EIMSK |= (1 << INT4);   
-    EICRB |= (1 << ISC40);
-    EICRB |= (1 << ISC41);  // <- Toggle 1 Raising Edge 0 Falling Edge
+    SETBIT(TCCR0B, CS00);   // Prescaler 64 for Timer 0B
+    SETBIT(TCCR0B, CS01);
 
-    TCCR1A |= (1 << COM1A1) | (1 << COM1B1) | (1 << WGM11);        //NON Inverted PWM
-    TCCR1B |= (1 << WGM13) | (1 << WGM12) | (1 << CS11) | (1 << CS10); //PRESCALER=64 MODE 14(FAST PWM)
+    SETBIT(PORTC, PC7);     // Activate pullupressistor of PC7
+    SETBIT(EIMSK, INT4);
+    SETBIT(EICRB, ISC40);
+    SETBIT(EICRB, ISC41);   // <- Toggle 1 Raising Edge 0 Falling Edge
+
+    SETBIT(TCCR1A, COM1A1); // NON Inverted PWM
+    SETBIT(TCCR1A, COM1B1); // NON Inverted PWM
+    SETBIT(TCCR1A, WGM11);  // NON Inverted PWM
+    SETBIT(TCCR1B, WGM13);  // MODE 14(FAST PWM)
+    SETBIT(TCCR1B, WGM12);  // MODE 14(FAST PWM)
+    SETBIT(TCCR1B, CS10);   // PRESCALER=64 
+    SETBIT(TCCR1B, CS11);   // PRESCALER=64
+
     ICR1 = 2499;
-
-    EIMSK |= (1 << INT4);
 
     Led::setStatusLed(1, true);
     Led::setStatusLed(2, true);
@@ -147,7 +127,6 @@ void DeployCore::run()
 
 void deploy()
 {   
-    cli();
     if (deployedCount < packageCount)
     {
         Led::setStatusLed(2, false);
@@ -157,7 +136,7 @@ void deploy()
         MotorController::home();
         _delay_ms(500);
         Servo::close();
-        _delay_ms(2000);
+        _delay_ms(1000);
     }else
     {
         for (size_t i = 0; i < 8; i++)
@@ -169,6 +148,4 @@ void deploy()
         }
     }
     Led::setStatusLed(2, true);
-    _delay_ms(2000);
-    sei();
 }
