@@ -39,6 +39,7 @@ ISR(INT4_vect)
     if (EICRB & (1 << ISC41)) 
     {
         TCNT0 = 0;
+        dT = 0;                 // Reset dT
         // falling edge next
         CLEARBIT(EICRB, ISC41);
     }else 
@@ -49,8 +50,7 @@ ISR(INT4_vect)
     }
 
     if (TIMER2US(dT) >= 1472 && TIMER2US(dT) <= 1560)
-    {
-        // Activate Brakes
+    {   // Activate Brakes
         C_SETBIT(BRAKE);
         Led::setStatusLed(1, false);
     }else
@@ -58,10 +58,9 @@ ISR(INT4_vect)
         C_CLEARBIT(BRAKE);
         Led::setStatusLed(1, true);
     }
-    if (TIMER2US(dT) >= 944 && TIMER2US(dT) <= 1040)
+    if (TIMER2US(dT) >= 1040 && TIMER2US(dT) <= 1120)
     {
         cli();
-        dT = 0;                 // Reset dT
         deploy();
         SETBIT(EIFR, INTF4);    // Clear Pending Interrupt
         sei();
