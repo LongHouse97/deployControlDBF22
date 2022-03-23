@@ -12,18 +12,26 @@
 
 using namespace aviware::jA;
 
-static constexpr int lowerLimit = 195; // default 75
+#define HORNET
+//#define PROTOTYPE
 
-static constexpr int upperLimit = 267; // default 300
+#ifdef PROTOTYPE
+    static constexpr int closePosition = 195; // default 75
+    static constexpr int openPosition = 267; // default 300
+#endif // PROTOTYPE
 
-volatile float currentAngle = lowerLimit;
+#ifdef HORNET
+    static constexpr int closePosition = 260; // default 75
+    static constexpr int openPosition = 130; // default 300
+#endif // HORNET
+
 
 void Servo::open()
 {
-    OCR1B = lowerLimit;
+    OCR1B = closePosition;
 }
 
 void Servo::close()
 {
-    OCR1B = upperLimit;
+    OCR1B = openPosition;
 }

@@ -61,7 +61,7 @@ ISR(INT4_vect)
     if (TIMER2US(dT) >= 1040 && TIMER2US(dT) <= 1120)
     {
         cli();
-        deploy();
+        //deploy();
         SETBIT(EIFR, INTF4);    // Clear Pending Interrupt
         sei();
     }
