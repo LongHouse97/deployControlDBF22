@@ -50,7 +50,7 @@ ISR(INT4_vect)
         dT = TCNT0;
     }
 
-    if (TIMER2US(dT) >= 1472 && TIMER2US(dT) <= 2016)
+    if (TIMER2US(dT) >= 1472 && TIMER2US(dT) <= 1560)
     {
         //Brakes::activate();
         PORTC |= (1 << PC4);
@@ -61,7 +61,7 @@ ISR(INT4_vect)
         PORTC &= ~(1 << PC4);
         Led::setStatusLed(1, true);
     }
-    if (TIMER2US(dT) >= 920 && TIMER2US(dT) <= 1080) // old Value 1248
+    if (TIMER2US(dT) >= 1040 && TIMER2US(dT) <= 1120) // old Value 1248
     {
         cli();
         dT = 0;
