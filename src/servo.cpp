@@ -21,17 +21,17 @@ using namespace aviware::jA;
 #endif // PROTOTYPE
 
 #ifdef HORNET
-    static constexpr int closePosition = 260; // default 75
-    static constexpr int openPosition = 130; // default 300
+    static constexpr int closePosition = 163;
+    static constexpr int openPosition = 260;
 #endif // HORNET
 
 
 void Servo::open()
 {
-    OCR1B = closePosition;
+    OCR1B = openPosition;
 }
 
 void Servo::close()
 {
-    OCR1B = openPosition;
+    OCR1B = closePosition;
 }

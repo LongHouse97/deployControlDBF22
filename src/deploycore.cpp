@@ -26,6 +26,7 @@ static volatile uint8_t dT;
 static volatile int8_t deployedCount = 0;
 static constexpr int8_t packageCount = 5;
 static constexpr int stepsPerPackage = 500;
+static volatile bool handledFirstAttempt = false;
 
 void deploy();
 
@@ -61,7 +62,7 @@ ISR(INT4_vect)
     if (TIMER2US(dT) >= 1040 && TIMER2US(dT) <= 1120)
     {
         cli();
-        //deploy();
+        deploy();
         SETBIT(EIFR, INTF4);    // Clear Pending Interrupt
         sei();
     }
@@ -74,7 +75,8 @@ void DeployCore::initialize()
         DDRx |= (1 << Pxn);  -> Ausgang
     */
 
-
+    CLEARBIT(DDRC, DDC2);   // Aux 1 -> Select Double Deploy
+    SETBIT(PORTC, PC2);     // Activate Pullup Resistor on Aux 1
     SETBIT(DDRC, DDC4);     // Aux 2 -> Brake Signal
     SETBIT(DDRC, DDC5);     // Aux 3 -> Ramp Servo
 
@@ -110,8 +112,8 @@ void DeployCore::initialize()
 
     _delay_ms(500);
 
-    MotorController::move(1);
-    _delay_ms(50);
+    MotorController::move(-4);
+    _delay_ms(250);
     MotorController::home();
 
     sei();
@@ -130,7 +132,23 @@ void deploy()
     if (deployedCount < packageCount)
     {
         Led::setStatusLed(2, false);
-        deployedCount++;
+
+        // Selective Second Deployment
+        // Check if Second Deployment is selected
+        if (CHECKBIT(PORTC, PC2))
+        {
+            deployedCount++;
+        }else
+        {
+            if (!handledFirstAttempt)
+            {
+                handledFirstAttempt = true;
+            }else
+            {
+                deployedCount++;
+                handledFirstAttempt = false;
+            }
+        }
         Servo::open();
         MotorController::move(-stepsPerPackage * deployedCount);
         MotorController::home();
