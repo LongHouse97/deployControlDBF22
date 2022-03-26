@@ -26,7 +26,6 @@ static volatile uint8_t dT;
 static volatile int8_t deployedCount = 0;
 static constexpr int8_t packageCount = 5;
 static constexpr int stepsPerPackage = 500;
-static volatile bool handledFirstAttempt = false;
 
 void deploy();
 
@@ -130,14 +129,7 @@ void deploy()
     if (deployedCount < packageCount)
     {
         Led::setStatusLed(2, false);
-        if (!handledFirstAttempt)
-        {
-            handledFirstAttempt = true;
-        }else
-        {
-            deployedCount++;
-            handledFirstAttempt = false;
-        }
+        deployedCount++;
         Servo::open();
         MotorController::move(-stepsPerPackage * deployedCount);
         MotorController::home();
