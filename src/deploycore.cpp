@@ -74,9 +74,7 @@ void DeployCore::initialize()
         DDRx &= ~(1 << Pxn); -> Eingang
         DDRx |= (1 << Pxn);  -> Ausgang
     */
-
-    CLEARBIT(DDRC, DDC2);   // Aux 1 -> Select Double Deploy
-    SETBIT(PORTC, PC2);     // Activate Pullup Resistor on Aux 1
+   
     SETBIT(DDRC, DDC4);     // Aux 2 -> Brake Signal
     SETBIT(DDRC, DDC5);     // Aux 3 -> Ramp Servo
 
@@ -132,22 +130,13 @@ void deploy()
     if (deployedCount < packageCount)
     {
         Led::setStatusLed(2, false);
-
-        // Selective Second Deployment
-        // Check if Second Deployment is selected
-        if (CHECKBIT(PORTC, PC2))
+        if (!handledFirstAttempt)
         {
-            deployedCount++;
+            handledFirstAttempt = true;
         }else
         {
-            if (!handledFirstAttempt)
-            {
-                handledFirstAttempt = true;
-            }else
-            {
-                deployedCount++;
-                handledFirstAttempt = false;
-            }
+            deployedCount++;
+            handledFirstAttempt = false;
         }
         Servo::open();
         MotorController::move(-stepsPerPackage * deployedCount);
